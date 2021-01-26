@@ -52,7 +52,6 @@ const likeCard = (req, res, next) => {
     .then((user) => {
       Card.findByIdAndUpdate({ _id: req.params.cardID }, { $push: { likes: user } }, { new: true })
         .then((card) => {
-          console.log(card);
           res.status(200).send(card);
         })
         .catch(next);
@@ -63,7 +62,9 @@ const likeCard = (req, res, next) => {
 const dislikeCard = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      Card.findByIdAndUpdate({ _id: req.params.cardID }, { $pull: { likes: user._id } }, { new: true })
+      Card
+      // eslint-disable-next-line max-len
+        .findByIdAndUpdate({ _id: req.params.cardID }, { $pull: { likes: user._id } }, { new: true })
         .then((card) => {
           res.status(200).send(card);
         })
