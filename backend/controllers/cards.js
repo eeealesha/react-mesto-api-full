@@ -1,11 +1,12 @@
 const Card = require('../models/card');
+const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-error');
 const BadReqError = require('../errors/bad-req-error');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.status(200).send(cards))
-    .catch((err) => res.status(500).send({ message: `${err}` }));
+    .catch(next);
 };
 
 const createCard = (req, res, next) => {
@@ -46,6 +47,31 @@ const deleteCard = (req, res, next) => {
     .catch(next);
 };
 
+const likeCard = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      Card.findByIdAndUpdate({ _id: req.params.cardID }, { $push: { likes: user } }, { new: true })
+        .then((card) => {
+          console.log(card);
+          res.status(200).send(card);
+        })
+        .catch(next);
+    })
+    .catch(next);
+};
+
+const dislikeCard = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      Card.findByIdAndUpdate({ _id: req.params.cardID }, { $pull: { likes: user._id } }, { new: true })
+        .then((card) => {
+          res.status(200).send(card);
+        })
+        .catch(next);
+    })
+    .catch(next);
+};
+
 module.exports = {
-  getCards, createCard, deleteCard,
+  getCards, createCard, deleteCard, likeCard, dislikeCard,
 };

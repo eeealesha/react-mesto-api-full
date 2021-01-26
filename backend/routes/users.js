@@ -29,7 +29,8 @@ router.post('/users',
       password: Joi.string().required().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string(),
+      avatar: Joi.string()
+        .pattern(new RegExp('https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,4}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)')),
     }),
   }), createUser);
 
@@ -44,7 +45,8 @@ router.patch('/users/me',
 router.patch('/users/me/avatar',
   celebrate({
     body: Joi.object().keys({
-      avatar: Joi.string(),
+      avatar: Joi.string()
+        .pattern(new RegExp('https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,4}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)')),
     }),
   }), updateAvatar);
 
